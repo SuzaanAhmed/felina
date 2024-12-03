@@ -1,45 +1,58 @@
-const express = require('express');
-const app = express();
-const port = 3000;
+import { MENU_ITEMS } from './constants.js'; 
+import readline from 'readline';
+import { menuDisplay } from './menuDisplay.js'; 
 
-// Middleware to parse JSON
-app.use(express.json());
+const user_input = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-// In-memory storage for menu items (for simplicity)
-let menu = [];
-let menuItemId = 1;
+function userInterface() {
+    console.log("\n1: Display Menu ");
+    console.log("2: View Payment requests");
+    console.log("3: Make payment");
+    console.log("4: Check Transaction history");
+    console.log("5: Undo transactions");
+    console.log("6: Prioritize payment queue");
+    console.log("7: Exit");
 
-// Add Menu Item endpoint
-app.post('/menu', (req, res) => {
-    const { name, price, category } = req.body;
-
-    // Validation
-    if (!name || !price || !category) {
-        return res.status(400).json({ message: 'All fields are required: name, price, and category.' });
-    }
-
-    // Check if item exists (by name)
-    const existingItem = menu.find(item => item.name.toLowerCase() === name.toLowerCase());
-    if (existingItem) {
-        // Update the existing item
-        existingItem.price = price;
-        existingItem.category = category;
-        return res.status(200).json({
-            message: 'Menu item updated successfully.',
-            menuItem: existingItem
-        });
-    }
-
-    // Add new menu item
-    const newItem = { id: menuItemId++, name, price, category };
-    menu.push(newItem);
-    res.status(201).json({
-        message: 'Menu item added successfully.',
-        menuItem: newItem
+    user_input.question("Enter selection: ", (selection) => {
+        switch (parseInt(selection)) {
+            case 1:
+                menuDisplay(); // Call menuDisplay to show the menu
+                break;
+            case 2:
+                console.log("Viewing payment requests...");
+                // Add functionality here
+                break;
+            case 3:
+                console.log("Making payment...");
+                // Add functionality here
+                break;
+            case 4:
+                console.log("Checking transaction history...");
+                // Add functionality here
+                break;
+            case 5:
+                console.log("Undoing transactions...");
+                // Add functionality here
+                break;
+            case 6:
+                console.log("Prioritizing payment queue...");
+                // Add functionality here
+                break;
+            case 7:
+                console.log("Exiting...");
+                user_input.close(); // Exit the program
+                return; // Exit the userInterface function to stop recursion
+            default:
+                console.log("Invalid selection. Please try again.");
+                break;
+        }
+        
+        // Call userInterface again to prompt the user for the next action
+        userInterface();
     });
-});
+}
 
-// Start the server
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+userInterface();
