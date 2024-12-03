@@ -3,6 +3,8 @@ import express from 'express';
 let totalBill = 0;
 let mainDishCount = 0;
 let sideDishCount = 0;
+let dessertCount = 0;
+let beverageCount = 0;
 //have initialised here itself instead of importing because javascriipt is possessed
 
 let MENU_ITEMS = [];  
@@ -45,6 +47,10 @@ app.post('/order', (req, res) => {
         mainDishCount++;
     } else if (item.category === 'Side') {
         sideDishCount++;
+    } else if (item.category === 'Beverage') {
+        dessertCount++;
+    } else if (item.category === 'Dessert') {
+        beverageCount++;
     }
 
     res.json({
