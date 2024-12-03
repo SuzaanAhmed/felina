@@ -55,7 +55,7 @@ app.post('/order', (req, res) => {
     let order = {
         id: orders.length + 1,
         items: [item],
-        status: 'Preparing',
+        status: 'Preparing',  // Initial status
         totalBill,
         mainDishCount,
         sideDishCount,
@@ -75,10 +75,12 @@ app.post('/order', (req, res) => {
         orderId: order.id
     });
 
+    // Change status after 1 minute (60000ms) to "Out for Delivery"
     setTimeout(() => {
         order.status = 'Out for Delivery';
         console.log(`Order ${order.id} status changed to Out for Delivery.`);
         
+        // Change status after another minute (60000ms) to "Delivered"
         setTimeout(() => {
             order.status = 'Delivered';
             console.log(`Order ${order.id} status changed to Delivered.`);
@@ -110,7 +112,18 @@ app.post('/reset', (req, res) => {
 });
 
 app.get('/orders', (req, res) => {
-    res.json(orders);
+    const formattedOrders = orders.map(order => ({
+        id: order.id,
+        items: order.items,
+        status: order.status || 'Preparing', 
+        totalBill: order.totalBill.toFixed(2), 
+        mainDishCount: order.mainDishCount,
+        sideDishCount: order.sideDishCount,
+        dessertCount: order.dessertCount,
+        beverageCount: order.beverageCount
+    }));
+
+    res.json(formattedOrders);
 });
 
 app.listen(port, () => {
