@@ -57,7 +57,9 @@ app.post('/order', (req, res) => {
         message: `${item.name} added to your order.`,
         totalBill,
         mainDishCount,
-        sideDishCount
+        sideDishCount,
+        dessertCount,
+        beverageCount
     });
 });
 
@@ -66,8 +68,11 @@ app.post('/order', (req, res) => {
 app.post('/finalize', (req, res) => {
     res.json({
         message: 'Order finalized',
+        totalBill,
         mainDishCount,
         sideDishCount,
+        dessertCount,
+        beverageCount,
         totalBill: totalBill.toFixed(2)
     });
 });
@@ -77,6 +82,8 @@ app.post('/reset', (req, res) => {
     totalBill = 0;
     mainDishCount = 0;
     sideDishCount = 0;
+    dessertCount = 0;
+    beverageCount = 0;
     res.json({ message: 'Order reset' });
 });
 
