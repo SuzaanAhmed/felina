@@ -1,21 +1,20 @@
 import express from 'express';
-import cron from 'node-cron';  // Import node-cron for scheduling tasks
-
+import cron from 'node-cron';  
 let totalBill = 0;
 let mainDishCount = 0;
 let sideDishCount = 0;
 let dessertCount = 0;
 let beverageCount = 0;
 
-let MENU_ITEMS = [];
-let orders = [];  // Array to hold orders and their status
+//have initialised here itself instead of importing because javascriipt is possessed
+
+let MENU_ITEMS = [];  
+//forgot requiremnt to post menu so declared in file and imported but changed it now
 
 const app = express();
-const port = 3001;
+const port = 3001;//Note to self check why 3000 not available
 
 app.use(express.json());
-
-// 1. Set the menu (POST request to /menu)
 app.post('/menu', (req, res) => {
     MENU_ITEMS = req.body;
 
@@ -29,12 +28,10 @@ app.post('/menu', (req, res) => {
     });
 });
 
-// 2. Display menu (GET request to /menu)
 app.get('/menu', (req, res) => {
     res.json(MENU_ITEMS);
 });
 
-// 3. Add item to the order (POST request to /order)
 app.post('/order', (req, res) => {
     const { itemIndex } = req.body; // Expect itemIndex (1-based) from the request body
 
@@ -55,7 +52,6 @@ app.post('/order', (req, res) => {
         beverageCount++;
     }
 
-    // Add a new order to the orders array with a status of "Preparing"
     let order = {
         id: orders.length + 1,
         items: [item],
@@ -80,7 +76,6 @@ app.post('/order', (req, res) => {
     });
 });
 
-// 4. Finalize the order (POST request to /finalize)
 app.post('/finalize', (req, res) => {
     res.json({
         message: 'Order finalized',
@@ -93,25 +88,24 @@ app.post('/finalize', (req, res) => {
     });
 });
 
-// 5. Reset the order (POST request to /reset)
+
 app.post('/reset', (req, res) => {
     totalBill = 0;
     mainDishCount = 0;
     sideDishCount = 0;
     dessertCount = 0;
     beverageCount = 0;
-    orders = [];  // Reset the orders array
+    orders = []; 
     res.json({ message: 'Order reset' });
 });
 
-// 6. Get all orders (GET request to /orders)
 app.get('/orders', (req, res) => {
     res.json(orders);
 });
 
 // 7. CRON job to update the order status
 cron.schedule('*/15 * * * * *', () => {
-    // This job runs every 5 minutes
+    // This job runs every 15 seconds
     orders.forEach(order => {
         if (order.status === 'Preparing') {
             order.status = 'Out for Delivery';  // Change from Preparing to Out for Delivery
