@@ -32,7 +32,7 @@ app.get('/menu', (req, res) => {
 });
 
 app.post('/order', (req, res) => {
-    let { itemIndex } = req.body; // Expect itemIndex (1-based) from the request body
+    let { itemIndex } = req.body; 
 
     if (itemIndex < 1 || itemIndex > MENU_ITEMS.length) {
         return res.status(400).json({ error: 'Invalid item index' });
